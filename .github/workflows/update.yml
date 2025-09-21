@@ -1,0 +1,39 @@
+name: update
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install
+      - name: Install Chrome (for headless testing)
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable
+      - name: Start af1fde809329d210f66d3cc97bba1029
+        run: npm start -- af1fde809329d210f66d3cc97bba1029 %E6%98%8E%E6%B2%BB%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E4%BD%93%E8%82%B2%E5%AE%A4
+      - name: Start f95d5ecc93e5d210f66d3cc97bba10a4
+        run: npm start -- f95d5ecc93e5d210f66d3cc97bba10a4 %E8%BE%BB%E5%A0%82%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E4%BD%93%E8%82%B2%E5%AE%A4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: 'docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

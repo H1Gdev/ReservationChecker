@@ -1,0 +1,15 @@
+{
+  "name": "updater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "H1Gdev",
+  "license": "MIT",
+  "devDependencies": {
+    "chrome-remote-interface": "^0.33.3",
+    "selenium-webdriver": "^4.4.0"
+  }
+}

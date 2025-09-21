@@ -1,0 +1,58 @@
+<html lang="ja">
+<head>
+<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, maximum-scale=1.0, user-scalable=yes">
+<title>空き状況確認</title>
+<style>
+body {
+  -webkit-text-size-adjust: 100%;
+}
+</style>
+</head>
+<body>
+<div id="export"></div>
+<script>
+window.onload = async () => {
+  const days = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
+  const exportJson = document.getElementById('export');
+
+  const apptSysIds = {
+    'af1fde809329d210f66d3cc97bba1029': '%E6%98%8E%E6%B2%BB%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E4%BD%93%E8%82%B2%E5%AE%A4',
+    'f95d5ecc93e5d210f66d3cc97bba10a4': '%E8%BE%BB%E5%A0%82%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E4%BD%93%E8%82%B2%E5%AE%A4',
+  };
+  for (const apptSysId in apptSysIds) {
+    const p = document.createElement('p');
+    exportJson.appendChild(p);
+    const heading = document.createElement('h3');
+    heading.textContent = decodeURIComponent(apptSysIds[apptSysId]);
+    p.appendChild(heading);
+    try {
+      const res = await fetch(`${apptSysId}.json`, {
+        method: 'GET',
+      });
+      const json = await res.json();
+
+      const slots = json.slots;
+      sorted = Object.keys(slots);
+      sorted.sort();
+      const ul = document.createElement('ul');
+      for (const key of sorted) {
+        const li = document.createElement('li');
+        const startDate = new Date(slots[key].start);
+        li.innerHTML = `${startDate.toLocaleDateString('ja-JP')} ${days[startDate.getDay()]} ${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`;
+        ul.appendChild(li);
+      }
+      p.appendChild(ul);
+
+      const lastUpdateDate = new Date(json.lastUpdate);
+      const lastUpdate = document.createElement('div');
+      lastUpdate.innerHTML = `<small>${lastUpdateDate.toLocaleString('ja-JP')}</small>`;
+      p.appendChild(lastUpdate);
+    } catch (e) {
+      const error = document.createElement('div');
+      error.innerHTML = `<font color="red">${e.toString()}</font>`
+    }
+  }
+}
+</script>
+</body>
+</html>
