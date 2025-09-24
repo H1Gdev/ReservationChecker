@@ -38,7 +38,14 @@ window.onload = async () => {
       for (const key of sorted) {
         const li = document.createElement('li');
         const startDate = new Date(slots[key].start);
-        li.innerHTML = `${startDate.toLocaleDateString('ja-JP')} ${days[startDate.getDay()]} ${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`;
+        const text = `${startDate.toLocaleDateString('ja-JP')} ${days[startDate.getDay()]} ${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`;
+        if (startDate.getDay() == 4 && startDate.getHours() == 17) {
+          li.innerHTML = `<font color="red">${text}</font>`;
+        } else if ([0, 6].includes(startDate.getDay()) || startDate.getHours() >= 17) {
+          li.innerHTML = text;
+        } else {
+          li.innerHTML = `<font color="gray">${text}</font>`;
+        }
         ul.appendChild(li);
       }
       p.appendChild(ul);
