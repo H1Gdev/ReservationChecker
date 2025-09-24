@@ -45,7 +45,7 @@ window.onload = async () => {
 
       const lastUpdateDate = new Date(json.lastUpdate);
       const lastUpdate = document.createElement('div');
-      lastUpdate.innerHTML = `<small>${lastUpdateDate.toLocaleString('ja-JP')}</small>`;
+      lastUpdate.innerHTML = `<small>最終更新日時: ${lastUpdateDate.toLocaleString('ja-JP')}</small>`;
       p.appendChild(lastUpdate);
     } catch (e) {
       const error = document.createElement('div');
