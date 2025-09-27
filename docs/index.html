@@ -10,6 +10,7 @@ body {
 </head>
 <body>
 <div id="export"></div>
+<script src="holiday_jp.min.js"></script>
 <script>
 window.onload = async () => {
   const days = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
@@ -41,7 +42,7 @@ window.onload = async () => {
         const text = `${startDate.toLocaleDateString('ja-JP')} ${days[startDate.getDay()]} ${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`;
         if (startDate.getDay() == 4 && startDate.getHours() == 17) {
           li.innerHTML = `<font color="red">${text}</font>`;
-        } else if ([0, 6].includes(startDate.getDay()) || startDate.getHours() >= 17) {
+        } else if ([0, 6].includes(startDate.getDay()) || holiday_jp.isHoliday(startDate) || startDate.getHours() >= 17) {
           li.innerHTML = text;
         } else {
           li.innerHTML = `<font color="gray">${text}</font>`;
