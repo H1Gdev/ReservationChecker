@@ -75,7 +75,7 @@ async function buildChromeDriver() {
   await driver.get(url);
   const name = await driver.findElement(By.css('.room-name .ng-binding')).getText();
   if (name !== decodeURIComponent(roomName))
-    console.warn(name);
+    console.warn('names do not match...', name, roomName);
   await setTimeout(8 * 1000);
 
   await driver.quit();
