@@ -66,6 +66,15 @@ window.onload = async () => {
     a.textContent = decodeURIComponent(apptSysIds[apptSysId]);
     heading.appendChild(a);
     p.appendChild(heading);
+  }
+  {
+    const apptSysId = localStorage.getItem('selected');
+    if (apptSysId != null && Object.keys(apptSysIds).includes(apptSysId))
+      select.value = apptSysId;
+    select.dispatchEvent(new Event('change'));
+  }
+  for (const apptSysId in apptSysIds) {
+    const p = document.getElementById(apptSysId);
     try {
       const res = await fetch(`${apptSysId}.json`, {
         method: 'GET',
@@ -98,13 +107,8 @@ window.onload = async () => {
     } catch (e) {
       const error = document.createElement('div');
       error.innerHTML = `<font color="red">${e.toString()}</font>`
+      p.appendChild(error);
     }
-  }
-  {
-    const apptSysId = localStorage.getItem('selected');
-    if (apptSysId != null && Object.keys(apptSysIds).includes(apptSysId))
-      select.value = apptSysId;
-    select.dispatchEvent(new Event('change'));
   }
 }
 </script>
