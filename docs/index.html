@@ -27,26 +27,36 @@ window.onload = async () => {
     'af1fde809329d210f66d3cc97bba1029': '%E6%98%8E%E6%B2%BB%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E6%B9%98%E5%8D%97%E3%83%A6%E3%83%8A%E3%82%A4%E3%83%86%E3%83%83%E3%83%89%EF%BC%A2%EF%BC%A3%E4%BD%93%E8%82%B2%E5%AE%A4',
     'f95d5ecc93e5d210f66d3cc97bba10a4': '%E8%BE%BB%E5%A0%82%E5%B8%82%E6%B0%91%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_%E3%82%B5%E3%83%B3%E3%82%AD%E3%83%9B%E3%83%BC%E3%83%A0%E4%BD%93%E8%82%B2%E5%AE%A4',
   };
+  const select = document.createElement('select');
   {
-    const ul = document.createElement('ul');
-    exportJson.appendChild(ul);
+    exportJson.appendChild(select);
     for (const apptSysId in apptSysIds) {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.textContent = decodeURIComponent(apptSysIds[apptSysId]);
-      a.setAttribute('href', `#${apptSysId}`);
-      li.appendChild(a);
-      ul.appendChild(li);
+      const option = document.createElement('option');
+      option.setAttribute('value', apptSysId);
+      option.textContent = decodeURIComponent(apptSysIds[apptSysId]);
+      select.appendChild(option);
     }
+    select.addEventListener('change', e => {
+      const apptSysId = e.target.value;
+      for (const apptSysId in apptSysIds)
+        document.getElementById(apptSysId).style.display = 'none';
+      document.getElementById(apptSysId).style.display = '';
+      localStorage.setItem('selected', apptSysId);
+    });
     const hr = document.createElement('hr');
     exportJson.appendChild(hr);
   }
   for (const apptSysId in apptSysIds) {
     const p = document.createElement('p');
+    p.setAttribute('id', apptSysId);
+    p.style.display = 'none';
     exportJson.appendChild(p);
     const heading = document.createElement('h3');
-    heading.textContent = decodeURIComponent(apptSysIds[apptSysId]);
-    heading.setAttribute('id', apptSysId);
+    const a = document.createElement('a');
+    a.setAttribute('href', `https://fujisawacity.service-now.com/facilities_reservation?id=fr_slot_check&appt_sys_id=${apptSysId}`);
+    a.setAttribute('target', '_blank');
+    a.textContent = decodeURIComponent(apptSysIds[apptSysId]);
+    heading.appendChild(a);
     p.appendChild(heading);
     try {
       const res = await fetch(`${apptSysId}.json`, {
@@ -81,6 +91,12 @@ window.onload = async () => {
       const error = document.createElement('div');
       error.innerHTML = `<font color="red">${e.toString()}</font>`
     }
+  }
+  {
+    const apptSysId = localStorage.getItem('selected');
+    if (apptSysId != null && Object.keys(apptSysIds).includes(apptSysId))
+      select.value = apptSysId;
+    select.dispatchEvent(new Event('change'));
   }
 }
 </script>
