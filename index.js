@@ -1,6 +1,6 @@
 'use strict';
 
-const { Browser, Builder, By, until } = require('selenium-webdriver');
+const { Browser, Builder, By } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const CDP = require('chrome-remote-interface');
 
