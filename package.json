@@ -9,7 +9,7 @@
   "author": "H1Gdev",
   "license": "MIT",
   "devDependencies": {
-    "chrome-remote-interface": "^0.33.3",
-    "selenium-webdriver": "^4.4.0"
+    "chrome-remote-interface": "^0.34.0",
+    "selenium-webdriver": "^4.41.0"
   }
 }
