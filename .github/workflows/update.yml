@@ -34,11 +34,11 @@ jobs:
       - name: Start 27ab2af393d59210f66d3cc97bba1086
         run: npm start -- 27ab2af393d59210f66d3cc97bba1086 %E7%A7%8B%E8%91%89%E5%8F%B0%E5%85%AC%E5%9C%92%EF%BC%88%E7%A7%8B%E8%91%89%E5%8F%B0%E6%96%87%E5%8C%96%E4%BD%93%E8%82%B2%E9%A4%A8%EF%BC%89_%E7%AC%AC2%E4%BD%93%E8%82%B2%E5%AE%A4
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
