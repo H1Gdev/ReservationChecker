@@ -30,45 +30,59 @@ async function buildChromeDriver() {
   await Network.enable();
   await Page.enable();
 
+  let requestCount = 0;
+
   Network.requestWillBeSent(async params => {
     const url = new URL(params.request.url);
-    if (params.type === 'XHR' && params.request.method === 'POST' && url.pathname.startsWith('/api')) {
-      const headers = params.request.headers;
-      const body = JSON.parse(params.request.postData);
+    if (params.type !== 'XHR')
+      return;
+    if (params.request.method !== 'POST')
+      return;
+    if (!url.pathname.startsWith('/api'))
+      return;
 
-      const { cookies } = await Network.getCookies();
-      const cookie = cookies
-        .filter(cookie => cookie.domain === url.host)
-        .map(cookie => `${cookie.name}=${cookie.value}`)
-        .join(';');
-      headers.cookie = cookie;
+    const headers = params.request.headers;
 
-      const startDate = new Date(body.input_date);
-      startDate.setDate(1);
+    const body = JSON.parse(params.request.postData);
+    if (body.action.toLowerCase() !== 'getMonthlyData'.toLowerCase())
+      return;
 
-      let allSlots = {};
-      for (let i = 0; i < 4; ++i) {
-        const inputDate = new Date(startDate);
-        inputDate.setMonth(inputDate.getMonth() + i);
-        body.input_date = inputDate.toLocaleDateString('sv-SE');
+    const { cookies } = await Network.getCookies();
+    const cookie = cookies
+      .filter(cookie => cookie.domain === url.host)
+      .map(cookie => `${cookie.name}=${cookie.value}`)
+      .join(';');
+    headers.cookie = cookie;
 
-        const response = await fetch(url.href, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(body),
-        });
+    if (requestCount > 0)
+      console.warn('more than one request occurred...', requestCount);
+    ++requestCount;
 
-        const json = await response.json();
-        const slots = json.result.data.slots;
-        allSlots = Object.assign(allSlots, slots);
-      }
+    const startDate = new Date(body.input_date);
+    startDate.setDate(1);
 
-      const output = {
-        slots: allSlots,
-        lastUpdate: new Date().toISOString(),
-      };
-      await fs.writeFile(`docs/${apptSysId}.json`, JSON.stringify(output));
+    let allSlots = {};
+    for (let i = 0; i < 4; ++i) {
+      const inputDate = new Date(startDate);
+      inputDate.setMonth(inputDate.getMonth() + i);
+      body.input_date = inputDate.toLocaleDateString('sv-SE');
+
+      const response = await fetch(url.href, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+
+      const json = await response.json();
+      const slots = json.result.data.slots;
+      allSlots = Object.assign(allSlots, slots);
     }
+
+    const output = {
+      slots: allSlots,
+      lastUpdate: new Date().toISOString(),
+    };
+    await fs.writeFile(`docs/${apptSysId}.json`, JSON.stringify(output));
   });
 
   const url = `https://fujisawacity.service-now.com/facilities_reservation?id=fr_slot_check&appt_sys_id=${apptSysId}`;
